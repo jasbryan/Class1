@@ -43,9 +43,10 @@ namespace ClassApp1
         /// Add money to the account
         /// </summary>
         /// <param name="amount">amount to add to account</param>
-        public void Deposit(decimal amount)
+        public decimal Deposit(decimal amount)
         {
             Balance += amount;
+            return Balance;
         }
         /// <summary>
         /// REmove money from account if you have it
