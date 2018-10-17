@@ -35,35 +35,68 @@ namespace ClassApp1
                                 Console.WriteLine($"{i + 1}. {accountTypes[i]}");
                             }
                             Console.Write("Please select number:");
-                            var accountTypeOption = Convert.ToInt32(Console.ReadLine());
-                            var accountType = (TypesofAccount)Enum.Parse(typeof(TypesofAccount), accountTypes[accountTypeOption - 1]);
+                            var accountTypeOption = Console.ReadLine();
+                            //var accountType = (string.IsNullOrEmpty(accountTypeOption)) ?  : (TypesofAccount)Enum.Parse(typeof(TypesofAccount), accountTypes[Convert.ToInt32(accountTypeOption) - 1]);
+                            var accountType = (TypesofAccount)Enum.Parse(typeof(TypesofAccount), accountTypes[Convert.ToInt32(accountTypeOption) - 1]);
                             Console.Write("Initial Deposit:");
-                            var amount = Convert.ToDecimal(Console.ReadLine());
+                            var amountText = Console.ReadLine();
+                            //var amount = (string.IsNullOrEmpty(amountText)) ? null : Convert.ToDecimal(amountText);
+                            var amount = Convert.ToDecimal(amountText);
                             var account = Bank.CreateAccount(emailAddress, accountType, amount);
                             Console.WriteLine($"AN: {account.AccountNumber}, Type: {account.AccountType}, Balance: {account.Balance}");
                         }
-                        catch (Exception e)
+                        catch (FormatException fx)
                         {
-                            Console.WriteLine($"We got a fun exception: {e}");
+                            Console.WriteLine($"Invalid Data: {fx.Message}");
+                        }
+                        catch (ArgumentNullException ax)
+                        {
+                            Console.WriteLine($"{ax.Message}");
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Something crazy went wrong:{ex.Message}");
                         }
                         break;
                     case "2":
                         PrintAllAccounts();
-                        Console.Write("Eneter account number to deposit to:");
-                        var accountNumber = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("Amount to Deposit:");
-                        var depositAmount = Convert.ToDecimal(Console.ReadLine());
-                        var newBalance = Bank.Deposit(accountNumber, depositAmount);
-                        Console.WriteLine($"Your account has been credited, new balance is: {newBalance}");
+                        try
+                        {
+                            Console.Write("Eneter account number to deposit to:");
+                            var accountNumber = Convert.ToInt32(Console.ReadLine());
+                            Console.Write("Amount to Deposit:");
+                            var depositAmount = Convert.ToDecimal(Console.ReadLine());
+                            var newBalance = Bank.Deposit(accountNumber, depositAmount);
+                            Console.WriteLine($"Your account has been credited, new balance is: {newBalance}");
+                        }
+                        catch(FormatException fx)
+                        {
+                            Console.WriteLine($"{fx.Message}");
+                        }
+                        catch (ArgumentNullException ax)
+                        {
+                            Console.WriteLine($"{ax.Message}");
+                        }
                         break;
                     case "3":
                         PrintAllAccounts();
-                        Console.Write("Eneter account number to withdraw from :");
-                        accountNumber = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("Amount to Withdraw:");
-                        var withdrawAmount = Convert.ToDecimal(Console.ReadLine());
-                        newBalance = Bank.Withdraw(accountNumber, withdrawAmount);
-                        Console.WriteLine($"Your account has been credited, new balance is: {newBalance}");
+                        try
+                        {
+                            Console.Write("Eneter account number to withdraw from :");
+                            var accountNumber = Convert.ToInt32(Console.ReadLine());
+                            Console.Write("Amount to Withdraw:");
+                            var withdrawAmount = Convert.ToDecimal(Console.ReadLine());
+                            var newBalance = Bank.Withdraw(accountNumber, withdrawAmount);
+                            Console.WriteLine($"Your account has been credited, new balance is: {newBalance}");
+                        }
+                        catch (FormatException fx)
+                        {
+                            Console.WriteLine($"{fx.Message}");
+                        }
+                        catch (ArgumentNullException ax)
+                        {
+                            Console.WriteLine($"{ax.Message}");
+                        }
                         break;
                     case "4":
                         PrintAllAccounts();

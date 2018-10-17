@@ -22,7 +22,8 @@ namespace ClassApp1
         /// <param name="emailAddress">clients email address</param>
         /// <param name="accountType">Savings or Checking</param>
         /// <param name="initialDeposit">amount to start account with</param>
-        /// <returns>Account object</returns>
+        /// <returns>Account</returns>
+        /// <exception cref="ArgumentNullException" />
         public static Account CreateAccount(string emailAddress,TypesofAccount accountType=TypesofAccount.Checking, decimal initialDeposit = 0)
         {
             if (string.IsNullOrEmpty(emailAddress))
@@ -68,8 +69,7 @@ namespace ClassApp1
 
             if(tempAcct == null)
             {
-                //throw exception some day
-                return 0;
+                throw new ArgumentNullException("amount");
             }
             return tempAcct.Deposit(depositAmount);
 
@@ -81,19 +81,10 @@ namespace ClassApp1
 
             if (tempAcct == null)
             {
-                //throw exception some day
-                return 0;
+                throw new ArgumentNullException("amount");
             }
 
-            if (tempAcct.Withdraw(withdrawAmount))
-            {
-                return tempAcct.Balance;
-            }
-            else
-            {
-                //throw error with account balance
-                return 0;
-            }
+            return tempAcct.Withdraw(withdrawAmount);
 
         }
         #endregion

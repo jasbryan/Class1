@@ -48,19 +48,24 @@ namespace ClassApp1
             Balance += amount;
             return Balance;
         }
+
         /// <summary>
-        /// REmove money from account if you have it
+        /// Removes money from your account if you have it
         /// </summary>
-        /// <param name="amount">amount to try and withdraw</param>
-        /// <returns></returns>
-        public bool Withdraw(decimal amount)
+        /// <param name="amount">amount of money to remove from account</param>
+        /// <returns>New balance after withdraw</returns>
+        /// <exception cref="InsufficentFundsException" />
+        public decimal Withdraw(decimal amount)
         {
             if (Balance >= amount)
             {
                 Balance -= amount;
-                return true;
+                return Balance;
             }
-            else return false;
+            else
+            {
+                throw new InsufficentFundsException("You aint got enough cash brotha!!");
+            }
         }
 
 
