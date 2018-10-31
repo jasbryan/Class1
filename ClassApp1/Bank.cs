@@ -5,11 +5,12 @@ using System.Linq;
 
 namespace ClassApp1
 {
-    static class Bank
+    public static class Bank
     {
         #region Properties
 
-        private static List<Account> BankAccounts = new List<Account>();
+        //private static List<Account> BankAccounts = new List<Account>();
+        private static BankModel db = new BankModel();
         #endregion
 
         #region Constructors
@@ -42,7 +43,9 @@ namespace ClassApp1
                 tempy.Deposit(initialDeposit);
             }
 
-            BankAccounts.Add(tempy);
+            //BankAccounts.Add(tempy);
+            db.Accounts.Add(tempy);
+            db.SaveChanges();
             return tempy;
             
         }
@@ -52,11 +55,12 @@ namespace ClassApp1
         /// 
         /// </summary>
         /// <returns></returns>
-        public static IEnumerable<Account> GetAllAccounts()
+        public static IEnumerable<Account> GetAllAccounts(string emailAddress)
         {
-            return BankAccounts;
+            //return BankAccounts;
+            return db.Accounts.Where(a => a.EmailAddress == emailAddress);
         }
-        
+
         /// <summary>
         /// Allow user to deposit money to an account number they passed
         /// </summary>
@@ -65,28 +69,57 @@ namespace ClassApp1
         /// <returns></returns>
         public static decimal Deposit(Int32 accountNumber, decimal depositAmount)
         {
-            var tempAcct = BankAccounts.SingleOrDefault(a => a.AccountNumber == accountNumber);
+            //var tempAcct = BankAccounts.SingleOrDefault(a => a.AccountNumber == accountNumber);
+            var tempAcct = db.Accounts.SingleOrDefault(a => a.AccountNumber == accountNumber);
 
             if(tempAcct == null)
             {
                 throw new ArgumentNullException("amount");
             }
+            var transaction = new Transaction
+            {
+                Description = "Bank Depoist",
+                TypeOfTransaction = TransactionType.Credit,
+                Amount = depositAmount,
+                AccountNumber = accountNumber
+            };
+
+            db.SaveChanges();
+
             return tempAcct.Deposit(depositAmount);
 
         }
 
         public static decimal Withdraw(Int32 accountNumber, decimal withdrawAmount)
         {
-            var tempAcct = BankAccounts.SingleOrDefault(a => a.AccountNumber == accountNumber);
+            //var tempAcct = BankAccounts.SingleOrDefault(a => a.AccountNumber == accountNumber);
+            var tempAcct = db.Accounts.SingleOrDefault(a => a.AccountNumber == accountNumber);
 
             if (tempAcct == null)
             {
                 throw new ArgumentNullException("amount");
             }
 
+            var transaction = new Transaction
+            {
+                Description = "Bank Withdraw",
+                TypeOfTransaction = TransactionType.Debit,
+                Amount = withdrawAmount,
+                AccountNumber = accountNumber
+            };
+
+            db.SaveChanges();
+
             return tempAcct.Withdraw(withdrawAmount);
 
         }
+
+        public static IEnumerable<Transaction> GetAllTransactions(int accountNumber)
+        {
+            return db.Transactions.Where(t => t.AccountNumber == accountNumber).OrderByDescending(t => t.TransactionDate);
+        }
+
+
         #endregion
 
     }

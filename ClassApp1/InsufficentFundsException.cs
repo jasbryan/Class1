@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ClassApp1
 {
-    class InsufficentFundsException : Exception
+    public class InsufficentFundsException : Exception
     {
         public InsufficentFundsException() : base()
         {

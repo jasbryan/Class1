@@ -9,6 +9,8 @@ namespace ClassApp1
             Console.WriteLine("**********************");
             Console.WriteLine("Welcome to NAthan's bank");
             Console.WriteLine("**********************");
+            Console.Write("email address:");
+            var emailAddress = Console.ReadLine();
             while (true)
             {
                 Console.WriteLine("0. Exit");
@@ -16,6 +18,7 @@ namespace ClassApp1
                 Console.WriteLine("2. Deposit money");
                 Console.WriteLine("3. Withdraw money");
                 Console.WriteLine("4. Print all accounts");
+                Console.WriteLine("5. Print all Transactions");
                 Console.Write("Please select an option:");
                 var option = Console.ReadLine();
 
@@ -26,8 +29,6 @@ namespace ClassApp1
                     case "1":
                         try
                         {
-                            Console.Write("email address:");
-                            var emailAddress = Console.ReadLine();
                             var accountTypes = Enum.GetNames(typeof(TypesofAccount));
                             Console.WriteLine("Please pick an account type:");
                             for (int i = 0; i < accountTypes.Length; i++)
@@ -59,7 +60,7 @@ namespace ClassApp1
                         }
                         break;
                     case "2":
-                        PrintAllAccounts();
+                        PrintAllAccounts(emailAddress);
                         try
                         {
                             Console.Write("Eneter account number to deposit to:");
@@ -79,7 +80,7 @@ namespace ClassApp1
                         }
                         break;
                     case "3":
-                        PrintAllAccounts();
+                        PrintAllAccounts(emailAddress);
                         try
                         {
                             Console.Write("Eneter account number to withdraw from :");
@@ -99,7 +100,17 @@ namespace ClassApp1
                         }
                         break;
                     case "4":
-                        PrintAllAccounts();
+                        PrintAllAccounts(emailAddress);
+                        break;
+                    case "5":
+                        PrintAllAccounts(emailAddress);
+                        Console.Write("Account number:");
+                        var transnum = Convert.ToInt32(Console.ReadLine());
+                        var trans = Bank.GetAllTransactions(transnum);
+                        foreach (var tran in trans)
+                        {
+                            Console.Write($"Tdate: {tran.TransactionDate}, Ttype: {tran.TypeOfTransaction}, Amount: {tran.Amount}, Desc: {tran.Description}");
+                        }
                         break;
                     default:
                         break;
@@ -109,9 +120,9 @@ namespace ClassApp1
 
         }
 
-        private static void PrintAllAccounts()
+        private static void PrintAllAccounts(string emailAddress)
         {
-            var accounts = Bank.GetAllAccounts();
+            var accounts = Bank.GetAllAccounts(emailAddress);
             foreach (var acct in accounts)
             {
                 Console.WriteLine($"AN: {acct.AccountNumber} , Type: {acct.AccountType}, Balance: {acct.Balance}");

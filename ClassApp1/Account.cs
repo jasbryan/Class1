@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace ClassApp1
 {
-    enum TypesofAccount
+    public enum TypesofAccount
     {
         Savings,
         Checking,
@@ -13,26 +14,30 @@ namespace ClassApp1
     /// <summary>
     /// Bank Account object that we can use in this crazy class
     /// </summary>
-    class Account
+    public class Account
     {
-        private static int lastAccountNumber = 0;
+        //private static int lastAccountNumber = 0;
 
         #region Properties
         /// <summary>
         /// Account number class stored in an int
         /// </summary>
-        public int AccountNumber { get; }
+        public int AccountNumber { get; private set; }
+
+        [EmailAddress]      
         public string EmailAddress { get; set; }
         public decimal Balance { get; private set; }
         public TypesofAccount AccountType { get; set; }
-        public DateTime CreatedDate { get; }
+        public DateTime CreatedDate { get; private set; }
+
+        public virtual ICollection<Transaction> Transactions { get; set; }
         #endregion
 
         #region Constructor
 
         public Account()
         {
-            AccountNumber = ++lastAccountNumber;
+            //AccountNumber = ++lastAccountNumber;
             CreatedDate = DateTime.Now;
 
         }
