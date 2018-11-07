@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ClassApp1;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BankWebUI.Controllers
 {
+    [Authorize]
     public class AccountsController : Controller
     {
         private readonly BankModel _context;
@@ -19,9 +21,10 @@ namespace BankWebUI.Controllers
         }
 
         // GET: Accounts
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Accounts.ToListAsync());
+            //return View(await _context.Accounts.ToListAsync());
+            return View(Bank.GetAllAccounts(HttpContext.User.Identity.Name));
         }
 
         // GET: Accounts/Details/5
