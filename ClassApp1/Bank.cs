@@ -119,6 +119,20 @@ namespace ClassApp1
             return db.Transactions.Where(t => t.AccountNumber == accountNumber).OrderByDescending(t => t.TransactionDate);
         }
 
+        public static Account GetAccountDetails(int accountNumber)
+        {
+            return db.Accounts.FirstOrDefault(a => a.AccountNumber == accountNumber);
+
+        }
+
+        public static void EditAccount(Account account)
+        {
+
+            db.Update(account);
+            db.SaveChanges();
+
+        }
+
 
         #endregion
 

@@ -22,13 +22,13 @@ namespace ClassApp1
         /// <summary>
         /// Account number class stored in an int
         /// </summary>
-        public int AccountNumber { get; private set; }
+        public int AccountNumber { get; set; }
 
         [EmailAddress]      
         public string EmailAddress { get; set; }
-        public decimal Balance { get; private set; }
+        public decimal Balance { get;  set; }
         public TypesofAccount AccountType { get; set; }
-        public DateTime CreatedDate { get; private set; }
+        public DateTime CreatedDate { get; set; }
 
         public virtual ICollection<Transaction> Transactions { get; set; }
         #endregion
