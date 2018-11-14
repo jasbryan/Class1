@@ -48,10 +48,10 @@ namespace ClassApp1
         /// Add money to the account
         /// </summary>
         /// <param name="amount">amount to add to account</param>
-        public decimal Deposit(decimal amount)
+        public bool Deposit(decimal amount)
         {
             Balance += amount;
-            return Balance;
+            return true;
         }
 
         /// <summary>
@@ -60,16 +60,16 @@ namespace ClassApp1
         /// <param name="amount">amount of money to remove from account</param>
         /// <returns>New balance after withdraw</returns>
         /// <exception cref="InsufficentFundsException" />
-        public decimal Withdraw(decimal amount)
+        public bool Withdraw(decimal amount)
         {
             if (Balance >= amount)
             {
                 Balance -= amount;
-                return Balance;
+                return true;
             }
             else
             {
-                throw new InsufficentFundsException("You aint got enough cash brotha!!");
+                return false;
             }
         }
 

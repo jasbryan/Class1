@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ClassApp1;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace BankWebUI.Controllers
 {
@@ -108,7 +109,7 @@ namespace BankWebUI.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AccountExists(account.AccountNumber))
+                    if (!Bank.AccountExists(account.AccountNumber))
                     {
                         return NotFound();
                     }
@@ -123,15 +124,14 @@ namespace BankWebUI.Controllers
         }
 
         // GET: Accounts/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public  IActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var account = await _context.Accounts
-                .FirstOrDefaultAsync(m => m.AccountNumber == id);
+            var account = Bank.GetAccountDetails(id.Value);
             if (account == null)
             {
                 return NotFound();
@@ -143,17 +143,67 @@ namespace BankWebUI.Controllers
         // POST: Accounts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
-            var account = await _context.Accounts.FindAsync(id);
-            _context.Accounts.Remove(account);
-            await _context.SaveChangesAsync();
+            Bank.DeleteAccount(id);
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AccountExists(int id)
+        public IActionResult Deposit(int? id)
         {
-            return _context.Accounts.Any(e => e.AccountNumber == id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var account = Bank.GetAccountDetails(id.Value);
+            return View(account);
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Deposit(IFormCollection formData)
+        {
+            var accountNumber = Convert.ToInt32(formData["AccountNumber"]);
+            var amount = Convert.ToDecimal(formData["Amount"]);
+
+            Bank.Deposit(accountNumber, amount);
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Withdraw(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var account = Bank.GetAccountDetails(id.Value);
+            return View(account);
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Withdraw(IFormCollection formData)
+        {
+            var accountNumber = Convert.ToInt32(formData["AccountNumber"]);
+            var amount = Convert.ToDecimal(formData["Amount"]);
+
+            Bank.Withdraw(accountNumber, amount);
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Transactions(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var transactions = Bank.GetAllTransactions(id.Value);
+            return View(transactions);
         }
     }
 }

@@ -67,7 +67,7 @@ namespace ClassApp1
         /// <param name="accountNumber">Account number to use</param>
         /// <param name="depositAmount">Amount of money to deposit to account</param>
         /// <returns></returns>
-        public static decimal Deposit(Int32 accountNumber, decimal depositAmount)
+        public static bool Deposit(Int32 accountNumber, decimal depositAmount)
         {
             //var tempAcct = BankAccounts.SingleOrDefault(a => a.AccountNumber == accountNumber);
             var tempAcct = db.Accounts.SingleOrDefault(a => a.AccountNumber == accountNumber);
@@ -84,13 +84,18 @@ namespace ClassApp1
                 AccountNumber = accountNumber
             };
 
-            db.SaveChanges();
+            if(tempAcct.Deposit(depositAmount))
+            {
+                db.Transactions.Add(transaction);
+                db.SaveChanges();
+                return true;
+            }
 
-            return tempAcct.Deposit(depositAmount);
+            return false;
 
         }
 
-        public static decimal Withdraw(Int32 accountNumber, decimal withdrawAmount)
+        public static bool Withdraw(Int32 accountNumber, decimal withdrawAmount)
         {
             //var tempAcct = BankAccounts.SingleOrDefault(a => a.AccountNumber == accountNumber);
             var tempAcct = db.Accounts.SingleOrDefault(a => a.AccountNumber == accountNumber);
@@ -108,9 +113,15 @@ namespace ClassApp1
                 AccountNumber = accountNumber
             };
 
-            db.SaveChanges();
 
-            return tempAcct.Withdraw(withdrawAmount);
+            if (tempAcct.Withdraw(withdrawAmount))
+            {
+                db.Transactions.Add(transaction);
+                db.SaveChanges();
+                return true;
+            }
+
+            return false;
 
         }
 
@@ -127,10 +138,24 @@ namespace ClassApp1
 
         public static void EditAccount(Account account)
         {
-
-            db.Update(account);
+            var oldAccount = Bank.GetAccountDetails(account.AccountNumber);
+            oldAccount.AccountType = account.AccountType;
+            oldAccount.EmailAddress = account.EmailAddress;
+            db.Update(oldAccount);
             db.SaveChanges();
 
+        }
+
+        public static void DeleteAccount(int accountNumber)
+        {
+            var accountToDelete = Bank.GetAccountDetails(accountNumber);
+            db.Accounts.Remove(accountToDelete);
+            db.SaveChanges();
+        }
+
+        public static bool AccountExists(int id)
+        {
+            return db.Accounts.Any(e => e.AccountNumber == id);
         }
 
 
